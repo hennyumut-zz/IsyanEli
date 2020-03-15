@@ -41,7 +41,7 @@ char entityList[][] =
 	"func_door",
 	"func_rotating",
 	"func_walltoggle",
-    "func_breakable",
+	"func_breakable",
 	"func_door_rotating",
 	"func_movelinear",
 	"prop_door",
@@ -78,6 +78,9 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_iseli0", stopGame);
 	RegConsoleCmd("sm_isyanelidurdur", stopGame);
 	RegConsoleCmd("sm_isyaneli0", stopGame);
+	
+	respawnCT = CreateConVar("sm_henny_isyaneli_ct-teleport", "1", "0 - Sadece Terörist takımı doğma noktasına çekilsin. Anti-Terörist'e sınırlama yok. \n1 - Her iki takımda doğma noktasına çekilsin.");
+	AutoExecConfig(true, "sm_isyaneli", "henny.dev");
 }
 
 public Action stopGame(int client, int args)
@@ -126,6 +129,19 @@ public Action startGame(int client, int args)
 	}
 	
 	doorsControl(false);
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && !IsFakeClient(i))
+		{
+			if (GetConVarBool(respawnCT) ? GetClientTeam(i) == CS_TEAM_CT && GetClientTeam(i) == CS_TEAM_T : GetClientTeam(i) == CS_TEAM_T)
+			{
+				CS_RespawnPlayer(i);
+			}
+		}
+	}
+	
+	
 	
 	PrintToChatAll("\x02[%s] \x04İsyan Eli \x10%i saniye \x10sonra başlayacaktır.", plugintag, countdown);
 	PrintHintTextToAll("İsyan Eli <font color='#51EC2E'>%i saniye</font> sonra başlayacaktır.", countdown);
