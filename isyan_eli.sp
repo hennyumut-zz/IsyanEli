@@ -32,6 +32,7 @@
 #define plugintag "SM"
 
 Handle timerHandle;
+ConVar respawnCT;
 
 int numPrinted = -1;
 int entityName;
